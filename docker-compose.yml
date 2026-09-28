@@ -1,0 +1,112 @@
+version: '3.8'
+
+x-common-env: &common-env
+  DB_HOST: db
+  DB_PORT: "3306"
+  REDIS_CACHE: redis-cache:6379
+  REDIS_QUEUE: redis-queue:6379
+  REDIS_SOCKETIO: redis-socketio:6379
+services:
+  db:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+    volumes:
+      - db-data:/var/lib/mysql
+    restart: always
+
+  redis-cache:
+    image: redis:alpine
+    restart: always
+
+  redis-queue:
+    image: redis:alpine
+    restart: always
+
+  redis-socketio:
+    image: redis:alpine
+    restart: always
+
+  backend:
+    image: frappe/erpnext:v15
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      REDIS_CACHE: redis-cache:6379
+      REDIS_QUEUE: redis-queue:6379
+      REDIS_SOCKETIO: redis-socketio:6379
+      SITE_NAME: production.localhost
+    volumes:
+      - sites:/home/frappe/frappe-bench/sites
+      - ./custom_apps/production_automation:/home/frappe/frappe-bench/apps/production_automation
+    depends_on:
+      - db
+      - redis-cache
+      - redis-queue
+      - redis-socketio
+    restart: always
+
+  frontend:
+    image: frappe/erpnext:v15
+    command: nginx-entrypoint.sh
+    environment:
+      BACKEND: backend:8000
+      FRAPPE_SITE_NAME_HEADER: production.localhost
+      REDIS_CACHE: redis-cache:6379
+      REDIS_QUEUE: redis-queue:6379
+      REDIS_SOCKETIO: redis-socketio:6379
+    volumes:
+      - sites:/home/frappe/frappe-bench/sites
+    depends_on:
+      - backend
+    ports:
+      - "8080:8080"
+    restart: always
+
+  websocket:
+    image: frappe/erpnext:v15
+    command:  node /home/frappe/frappe-bench/apps/frappe/socketio.js
+    environment:
+      REDIS_SOCKETIO: redis-socketio:6379
+    volumes:
+      - sites:/home/frappe/frappe-bench/sites
+    depends_on:
+      - backend
+    restart: always
+
+  queue-short:
+    image: frappe/erpnext:v15
+    command: bench worker --queue short
+    environment:
+      REDIS_QUEUE: redis-queue:6379
+    volumes:
+      - sites:/home/frappe/frappe-bench/sites
+    depends_on:
+      - backend
+    restart: always
+
+  queue-long:
+    image: frappe/erpnext:v15
+    command: bench worker --queue long
+    environment:
+      REDIS_QUEUE: redis-queue:6379
+    volumes:
+      - sites:/home/frappe/frappe-bench/sites
+    depends_on:
+      - backend
+    restart: always
+
+  scheduler:
+    image: frappe/erpnext:v15
+    command: bench schedule
+    environment:
+      REDIS_QUEUE: redis-queue:6379
+    volumes:
+      - sites:/home/frappe/frappe-bench/sites
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  db-data:
+  sites:

@@ -1,0 +1,13 @@
+[project]
+name = "production_automation"
+authors = [{ name = "Pavindhiran", email = "you@example.com" }]
+dynamic = ["version"]
+requires-python = ">=3.10"
+description = "Custom production flow automation"
+readme = "README.md"
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.bench.dev-dependencies]

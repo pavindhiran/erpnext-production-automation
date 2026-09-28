@@ -1,0 +1,48 @@
+# Secrets — NEVER commit these
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+*.egg
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Frappe
+sites/assets/
+sites/*/private/
+sites/*/site_config.json
+sites/*/error-snapshots/
+sites/*/locks/
+sites/*/logs/
+sites/*/task-logs/
+sites/*/touch*
+sites/*/.build/
+sites/apps.txt
+sites/common_site_config.json
+
+# Virtualenvs
+env/
+venv/
+.venv/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp

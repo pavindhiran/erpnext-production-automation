@@ -1,0 +1,9 @@
+{
+  "doctype": "Page",
+  "name": "production-assistant",
+  "page_name": "production-assistant",
+  "title": "Production Assistant",
+  "module": "Production Automation",
+  "standard": "Yes",
+  "roles": [{"role": "System Manager"}]
+}

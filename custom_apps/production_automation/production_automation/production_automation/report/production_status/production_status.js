@@ -1,0 +1,1 @@
+frappe.query_reports['Production Status'] = { filters: [ { fieldname: 'work_order', label: __('Work Order'), fieldtype: 'Link', options: 'Work Order' } ] };

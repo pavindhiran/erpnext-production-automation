@@ -1,0 +1,10 @@
+{
+  "doctype": "Report",
+  "name": "Production Status",
+  "report_name": "Production Status",
+  "report_type": "Script Report",
+  "ref_doctype": "Work Order",
+  "module": "Production Automation",
+  "is_standard": "Yes",
+  "disabled": 0
+}
